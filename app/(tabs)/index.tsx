@@ -1,75 +1,115 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import React, { useState } from "react";
+import { FlatList, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+export default function ChatScreen() {
+  const [messages, setMessages] = useState([
+    { id: "1", text: "Hello 👋", sender: "bot" },
+    { id: "2", text: "Hi, how are you?", sender: "me" },
+  ]);
+  const [input, setInput] = useState("");
 
-export default function HomeScreen() {
+  const sendMessage = () => {
+    if (!input.trim()) return;
+    
+    const newMessage = {
+      id: Date.now().toString(),
+      text: input,
+      sender: "me",
+    };
+    setMessages((prev) => [newMessage, ...prev]); // prepend for FlatList inverted
+    setInput("");
+  };
+
+  const renderItem = ({ item }: any) => (
+    <View
+      style={[
+        styles.message,
+        item.sender === "me" ? styles.myMessage : styles.otherMessage,
+      ]}
+    >
+      <Text style={styles.messageText}>{item.text}</Text>
+    </View>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      // keyboardVerticalOffset={90} // adjust if needed (header height etc.)
+    >
+      <FlatList
+        data={messages}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        inverted
+      />
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Type a message..."
+          value={input}
+          onChangeText={setInput}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <TouchableOpacity style={styles.micButton} onPress={sendMessage}>
+            <MaterialIcons name="mic" color="black" size={20}/>
+     </TouchableOpacity>
+        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+            <MaterialIcons name="send" color="white" size={25}/>
+     </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
+  </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: { flex: 1, backgroundColor: "#f9f9f9",
+    // paddingBottom:20
+   },
+  message: {
+    margin: 8,
+    padding: 10,
+    borderRadius: 8,
+    maxWidth: "70%",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  myMessage: {
+    backgroundColor: "#007AFF",
+    alignSelf: "flex-end",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  otherMessage: {
+    backgroundColor: "#e5e5ea",
+    alignSelf: "flex-start",
+  },
+  messageText: { color: "white" },
+  inputContainer: {
+    flexDirection: "row",
+    padding: 8,
+    borderTopWidth: 1,
+    borderColor: "#ddd",
+    backgroundColor: "#fff",
+  },
+  input: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: "#f1f1f1",
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  sendButton: {
+    backgroundColor: "#007AFF",
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    justifyContent: "center",
+  },
+  micButton: {
+    backgroundColor: "#f1f1f1",
+    borderRadius: 9999,
+    marginRight:5,
+    paddingHorizontal: 16,
+    justifyContent: "center",
   },
 });
