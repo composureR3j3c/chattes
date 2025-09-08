@@ -1,11 +1,12 @@
 import AudioBubble from "@/components/AudioMessage";
+import { MicButton } from "@/components/micButton";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import {
   AudioModule,
   RecordingPresets,
   setAudioModeAsync,
   useAudioRecorder,
-  useAudioRecorderState
+  useAudioRecorderState,
 } from "expo-audio";
 import * as FileSystem from "expo-file-system";
 import React, { useEffect, useState } from "react";
@@ -24,8 +25,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState([
-    { id: "1", text: "Hello 👋", sender: "bot", type:"text"},
-    { id: "2", text: "Hi, how are you?", sender: "me" , type:"text"},
+    { id: "1", text: "Hello 👋", sender: "bot", type: "text" },
+    { id: "2", text: "Hi, how are you?", sender: "me", type: "text" },
   ]);
   const [input, setInput] = useState("");
   const [recording, setRecording] = useState(null);
@@ -36,15 +37,17 @@ export default function ChatScreen() {
   const record = async () => {
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
+    // Alert.ale
   };
 
   const stopRecording = async () => {
     // The recording will be available on `audioRecorder.uri`.
     await audioRecorder.stop();
-    console.log("recording",audioRecorder.uri)
+    console.log("recording", audioRecorder.uri);
     if (audioRecorder.uri) {
       // Define where to save (inside app’s documents directory)
-      const newPath = FileSystem.documentDirectory + `recording-${Date.now()}.m4a`;
+      const newPath =
+        FileSystem.documentDirectory + `recording-${Date.now()}.m4a`;
 
       // Move file from cache to permanent storage
       await FileSystem.moveAsync({
@@ -54,8 +57,8 @@ export default function ChatScreen() {
 
       // Alert.alert("Saved!", `Recording stored at: ${newPath}`);
       console.log("Saved file:", newPath);
-       // Add audio message to chat
-       const newMessage = {
+      // Add audio message to chat
+      const newMessage = {
         id: Date.now().toString(),
         text: newPath,
         sender: "me",
@@ -79,8 +82,6 @@ export default function ChatScreen() {
     })();
   }, []);
 
-
-
   const sendMessage = () => {
     if (!input.trim()) return;
 
@@ -88,7 +89,7 @@ export default function ChatScreen() {
       id: Date.now().toString(),
       text: input,
       sender: "me",
-      type:"audio"
+      type: "text",
     };
     setMessages((prev) => [newMessage, ...prev]); // prepend for FlatList inverted
     setInput("");
@@ -106,20 +107,24 @@ export default function ChatScreen() {
           <AudioBubble uri={item.text} />
         </View>
       );
-    }
-
-    return (
-      <View
-        style={[
-          styles.message,
-          item.sender === "me" ? styles.myMessage : styles.otherMessage,
-        ]}
-      >
-        <Text style={item.sender === "me" ? styles.messageText:styles.myMessageText}>{item.text}</Text>
-      </View>
-    );
+    } else
+      return (
+        <View
+          style={[
+            styles.message,
+            item.sender === "me" ? styles.myMessage : styles.otherMessage,
+          ]}
+        >
+          <Text
+            style={
+              item.sender === "me" ? styles.messageText : styles.myMessageText
+            }
+          >
+            {item.text}
+          </Text>
+        </View>
+      );
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -142,11 +147,11 @@ export default function ChatScreen() {
             value={input}
             onChangeText={setInput}
           />
-          <TouchableOpacity style={styles.micButton} 
-        onPress={recorderState.isRecording ? stopRecording : record}>
-            <MaterialIcons name="mic" color="black" size={20} />
-            <Text>{recorderState.isRecording ? "Stop Recording" : "Start Recording"}</Text>
-          </TouchableOpacity>
+          <MicButton
+            isRecording={recorderState.isRecording}
+            onPress={recorderState.isRecording ? stopRecording : record}
+          />
+
           <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
             <MaterialIcons name="send" color="white" size={25} />
           </TouchableOpacity>
@@ -205,8 +210,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     justifyContent: "center",
   },
-  audioButton:{  backgroundColor: "#34C759",
+  audioButton: {
+    backgroundColor: "#34C759",
     borderRadius: 10,
     padding: 8,
-    alignItems: "center",}
+    alignItems: "center",
+  },
 });
