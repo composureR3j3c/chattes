@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import React from 'react';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,7 +17,7 @@ export default function RootLayout() {
   }
 
   return (
-      <Stack >
+      <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" options={{ headerShown: false }}/>
       </Stack>

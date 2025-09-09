@@ -137,7 +137,7 @@ export default function ChatScreen() {
   return (
     <SafeAreaView style={styles.container}>
       
-
+    {/* <View>{useSpeechRecognition}</View> */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
