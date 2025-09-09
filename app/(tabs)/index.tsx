@@ -1,10 +1,13 @@
 import AudioBubble from "@/components/AudioMessage";
 import { MicButton } from "@/components/micButton";
+import audio from "@assets/tones/start.wav";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import {
   AudioModule,
   RecordingPresets,
   setAudioModeAsync,
+  useAudioPlayer,
+  useAudioPlayerStatus,
   useAudioRecorder,
   useAudioRecorderState,
 } from "expo-audio";
@@ -33,15 +36,22 @@ export default function ChatScreen() {
 
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(audioRecorder);
+  const player = useAudioPlayer(audio);
+  const status = useAudioPlayerStatus(player);
 
   const record = async () => {
+    player.seekTo(0);
+    player.play() 
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
-    // Alert.ale
+    console.log("status", status);
+
   };
 
   const stopRecording = async () => {
     // The recording will be available on `audioRecorder.uri`.
+    player.seekTo(0);
+    player.play() 
     await audioRecorder.stop();
     console.log("recording", audioRecorder.uri);
     if (audioRecorder.uri) {
