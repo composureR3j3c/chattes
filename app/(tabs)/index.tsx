@@ -41,17 +41,16 @@ export default function ChatScreen() {
 
   const record = async () => {
     player.seekTo(0);
-    player.play() 
+    player.play();
     await audioRecorder.prepareToRecordAsync();
     audioRecorder.record();
     console.log("status", status);
-
   };
 
   const stopRecording = async () => {
     // The recording will be available on `audioRecorder.uri`.
     player.seekTo(0);
-    player.play() 
+    player.play();
     await audioRecorder.stop();
     console.log("recording", audioRecorder.uri);
     if (audioRecorder.uri) {
@@ -135,9 +134,10 @@ export default function ChatScreen() {
         </View>
       );
   };
-
   return (
     <SafeAreaView style={styles.container}>
+      
+
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}

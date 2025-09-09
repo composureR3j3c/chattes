@@ -5,6 +5,7 @@ import {
   useAudioRecorder,
   useAudioRecorderState,
 } from "expo-audio";
+import React from "react";
 import { useEffect } from "react";
 import { Alert, Button, StyleSheet, View } from "react-native";
 
@@ -39,12 +40,12 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-           {" "}
+        {" "}
       <Button
         title={recorderState.isRecording ? "Stop Recording" : "Start Recording"}
         onPress={recorderState.isRecording ? stopRecording : record}
       />
-         {" "}
+       {" "}
     </View>
   );
 }
