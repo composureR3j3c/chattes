@@ -1,7 +1,7 @@
 import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
-} from "expo-speech-recognition";
+} from "@jamsch/expo-speech-recognition";
 import React, { useState } from "react";
 import { Button, ScrollView, Text, View } from "react-native";
 
@@ -12,7 +12,7 @@ export function useSpeechRecognition() {
   ExpoSpeechRecognitionModule.getPermissionsAsync().then((result) => {
     console.log("Status:", result.status);
     console.log("Granted:", result.granted);
-    console.log("Restricted:", result.restricted); // (iOS only)
+    // console.log("Restricted:", result.restricted); // (iOS only)
     console.log("Can ask again:", result.canAskAgain);
     console.log("Expires:", result.expires);
   });
